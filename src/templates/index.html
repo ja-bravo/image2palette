@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Color palette from image</title>
+  <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+
+  <style>
+    html,
+    body {
+      height: 100vh;
+      width: 100%;
+      overflow-y: scroll;
+      background-color: #f5f7f7;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .wrapper {
+      min-height: 100vh;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: start;
+      align-items: center;
+      padding-top: 3rem;
+      padding-bottom: 200px;
+    }
+
+    .inputWrapper {
+      width: 400px;
+      height: 50px;
+      background-color: white;
+      border-radius: 4px;
+      box-shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.302), 0 1px 3px 1px rgba(60, 64, 67, 0.149);
+      -webkit-transition: box-shadow .08s linear, min-width .15s cubic-bezier(0.4, 0.0, 0.2, 1);
+      transition: box-shadow .08s linear, min-width .15s cubic-bezier(0.4, 0.0, 0.2, 1);
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #30A9DE;
+      margin-bottom: 16px;
+    }
+
+    .inputWrapper:hover {
+      box-shadow: 0 1px 3px 0 rgba(60, 64, 67, 0.302), 0 4px 8px 3px rgba(60, 64, 67, 0.149);
+    }
+
+    .title {
+      color: white;
+      font-weight: bold;
+      font-size: 1.8rem;
+    }
+
+    #secretInput {
+      position: absolute;
+      top: -1000px;
+      left: -1000px;
+      width: 1px;
+      height: 1px;
+    }
+
+    #result {
+      max-width: 600px;
+      height: auto;
+    }
+
+    #colours {
+      display: flex;
+      flex-direction: row;
+      margin-bottom: 16px;
+    }
+
+    .colour {
+      width: 50px;
+      height: 50px;
+      border-radius: 4px;
+      margin-right: 8px;
+      box-shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.302), 0 1px 3px 1px rgba(60, 64, 67, 0.149);
+      -webkit-transition: box-shadow .08s linear, min-width .15s cubic-bezier(0.4, 0.0, 0.2, 1);
+      transition: box-shadow .08s linear, min-width .15s cubic-bezier(0.4, 0.0, 0.2, 1);
+      cursor: pointer;
+    }
+
+    .colour:hover {
+      box-shadow: 0 1px 3px 0 rgba(60, 64, 67, 0.302), 0 4px 8px 3px rgba(60, 64, 67, 0.149);
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="wrapper">
+    <h1>Color palette from image</h1>
+    <div class="inputWrapper" onclick="onClick()"><span class="title">Upload</span></div>
+    <div id="colours">
+
+    </div>
+    <img id="result" />
+    <input type="file" accept="image/*" name="secretInput" id="secretInput">
+  </div>
+  <script>
+    const input = document.querySelector('#secretInput');
+    function onClick() {
+      input.click();
+    }
+
+    input.onchange = () => {
+      const file = input.files[0];
+      const reader = new FileReader();
+      reader.onload = () => {
+        fetch(`${window.location.origin}/palette`, {
+          body: JSON.stringify({ data: reader.result }),
+          method: 'post',
+        }).then(r => r.json())
+          .then(res => {
+            document.querySelector('#result').src = `data:image/jpeg;base64,${res.data}`;
+            const wrapper = document.querySelector('#colours');
+            wrapper.innerHTML = null;
+            res.colours.forEach(c => {
+              const colour = document.createElement('div');
+              colour.classList.add('colour');
+              colour.title = c;
+              colour.onclick = () => alert(c);
+              colour.style.background = c;
+              wrapper.appendChild(colour);
+            })
+          }).catch(e => alert("Unexpected error"));
+        // document.querySelector('#result').src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+  </script>
+</body>
+
+</html>
