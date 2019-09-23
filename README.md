@@ -10,7 +10,7 @@ Small python app that will return a colour palette based on the 10 main colours 
 
 Run the following commands
 ```
-$ docker build . -t image-palette
-$ docker run -p 5000:5000 image-palette
+$ docker build . -t jabravo/image2palette
+$ docker run -p 5000:5000 jabravo/image2palette
 ```
 Go to your browser and open localhost:5000
