@@ -4,7 +4,8 @@ Small python app that will return a colour palette based on the 10 main colours 
 
 #### Examples
 
-[example1](./examples/2.png)
+![example](https://github.com/ja-bravo/image2palette/blob/master/examples/2.png)
+![example](https://github.com/ja-bravo/image2palette/blob/master/examples/1.png)
 
 #### How to use
 
